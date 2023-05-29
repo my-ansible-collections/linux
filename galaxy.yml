@@ -1,0 +1,8 @@
+namespace: my_ansible_collections
+name: linux
+version: 0.0.0
+readme: README.md
+authors:
+- Tatsuto Iijima <tatsuto.iijima@gmail.com>
+description: My ansible collections for Linux
+repository: https://github.com/my-ansible-collections/linux
