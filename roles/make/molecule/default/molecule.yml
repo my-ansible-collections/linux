@@ -1,0 +1,22 @@
+---
+dependency:
+  name: galaxy
+driver:
+  name: docker
+platforms:
+  - name: amazon2023
+    image: amazonlinux:2023
+    pre_build_image: false
+    dockerfile: amazonlinux2023.dockerfile
+  - name: rhel8
+    image: redhat/ubi8:latest
+    pre_build_image: false
+    dockerfile: redhat8.dockerfile
+  - name: rhel9
+    image: redhat/ubi9:latest
+    pre_build_image: false
+    dockerfile: redhat9.dockerfile
+provisioner:
+  name: ansible
+verifier:
+  name: ansible

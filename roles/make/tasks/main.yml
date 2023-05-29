@@ -1,0 +1,42 @@
+---
+# tasks file for make
+- name: Set default variables
+  ansible.builtin.set_fact:
+    _make_configure_option: '{{ my_ansible_collections.linux.make.configure.option | default([]) }}'
+
+- name: Install packages
+  ansible.builtin.yum:
+    name: '{{ item.names }}'
+    state: '{{ item.state }}'
+  loop: '{{ my_ansible_collections.linux.make.packages }}'
+  when: my_ansible_collections.linux.make.packages is defined
+
+- name: Recursively remove unarchive directory of source
+  ansible.builtin.file:
+    path: '{{ my_ansible_collections.linux.make.source.dest }}/{{ my_ansible_collections.linux.make.source.src.split("/") | last | regex_replace("^(.*)\.tar\.gz$","\1") }}'
+    state: absent
+  changed_when: false
+
+- name: Unarchive source tar gzip
+  ansible.builtin.unarchive:
+    src: '{{ my_ansible_collections.linux.make.source.src }}'
+    dest: '{{ my_ansible_collections.linux.make.source.dest }}'
+    remote_src: '{{ my_ansible_collections.linux.make.source.remote_src }}'
+    list_files: true
+  register: _reg_make_unarchive
+  changed_when: false
+
+- name: Configure
+  ansible.builtin.command:
+    cmd: '{{ my_ansible_collections.linux.make.configure.command }}{% if _make_configure_option %} {{ _make_configure_option | join(" ") }}{% endif %}'
+    chdir: '{{ my_ansible_collections.linux.make.source.dest }}/{{ _reg_make_unarchive.files[0] }}'
+  changed_when: false
+  when: _reg_make_unarchive.files is defined
+
+- name: Excute command "make"
+  community.general.make:
+    chdir: '{{ my_ansible_collections.linux.make.source.dest }}/{{ _reg_make_unarchive.files[0] }}'
+    target: '{{ item }}'
+  loop: '{{ my_ansible_collections.linux.make.make.target | default([ "all", "install" ]) }}'
+  changed_when: false
+  when: _reg_make_unarchive.files is defined

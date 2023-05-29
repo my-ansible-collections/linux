@@ -1,0 +1,19 @@
+---
+- name: Converge
+  hosts: all
+  # become: true
+  # remote_user: ec2-user
+  tasks:
+    - name: Include make_openssl
+      ansible.builtin.include_role:
+        name: my_ansible_collections.linux.make
+      vars:
+        my_ansible_collections:
+          linux:
+            make:
+              source:
+                src: https://www.openssl.org/source/openssl-3.1.0.tar.gz
+                dest: /usr/local/src
+                remote_src: true
+              configure:
+                command: ./Configure

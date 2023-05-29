@@ -1,0 +1,33 @@
+---
+- name: Converge
+  hosts: all
+  tasks:
+    - name: Include make
+      ansible.builtin.include_role:
+        name: my_ansible_collections.linux.make
+      vars:
+        my_ansible_collections:
+          linux:
+            make:
+              packages:
+                - names: >-
+                    {% if ansible_facts.distribution == 'Amazon' and ansible_facts.distribution_major_version == '2023' %}[ 'unzip', 'tar', 'perl' ]
+                    {% elif ansible_facts.distribution == 'RedHat' and ansible_facts.distribution_major_version == '8' %}[ 'perl', 'gcc' ]
+                    {% elif ansible_facts.distribution == 'RedHat' and ansible_facts.distribution_major_version == '9' %}[ 'perl' ]
+                    {% endif %}
+                  state: installed
+              source:
+                src: https://www.openssl.org/source/openssl-3.1.0.tar.gz
+                dest: /usr/local/src
+                remote_src: true
+              configure:
+                command: ./Configure
+                option:
+                  - '"-Wl,-rpath,$(LIBRPATH)"'
+                  - --libdir=/usr/local/lib64
+                  - --openssldir=/usr/local/etc/ssl
+              make:
+                target:
+                  - build_sw
+                  - install_sw
+                  - install_ssldirs

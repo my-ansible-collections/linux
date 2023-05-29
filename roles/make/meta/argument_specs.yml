@@ -1,0 +1,85 @@
+---
+argument_specs:
+  main:
+    options:
+      my_ansible_collections:
+        description: Variables for namespace "my_ansible_collections".
+        type: dict
+        required: true
+        options:
+          linux:
+            description: Variables for collection "linux".
+            type: dict
+            required: true
+            options:
+              make:
+                description: Variables that can be specified with role "make".
+                type: dict
+                required: true
+                options:
+                  packages:
+                    description: Packages required for building.
+                    type: list
+                    elements: dict
+                    options:
+                      names:
+                        description: Packeage names.
+                        type: list
+                        elements: str
+                        required: true
+                      state:
+                        description:
+                          - Package installation status.
+                          - \`present` and `installed` will simply ensure that a desired package is installed.
+                          - \`latest` will update the specified package if it's not of the latest available version.
+                        type: str
+                        required: true
+                        choices:
+                          - 'present'
+                          - 'installed'
+                          - 'latest'
+                  source:
+                    description: About the source archive.
+                    type: dict
+                    required: true
+                    options:
+                      src:
+                        description:
+                          - If `remote_src=fale`, local path to archive file to copy to the target server; can be absolute or relative. If `remote_src=true`, path on the target server to existing archive file to unpack.
+                          - If `remote_src=yes` and `src` contains `://`, the remote machine will download the file from the URL first.
+                        type: str
+                        required: true
+                      dest:
+                        description:
+                          - Remote absolute path where the archive should be unpacked.
+                          - The given path must exist. Base directory is not created by this module.
+                        type: str
+                        required: true
+                      remote_src:
+                        description: Set to true to indicate the archived file is already on the remote system and not local to the Ansible controller.
+                        type: bool
+                        required: true
+                  configure:
+                    description: About configure.
+                    type: dict
+                    options:
+                      command:
+                        description: commnad for configure.
+                        type: str
+                        required: true
+                      option:
+                        description: Configure option.
+                        type: list
+                        elements: str
+                        default: []
+                  make:
+                    description: About command "make".
+                    type: dict
+                    options:
+                      target:
+                        description: Make options.
+                        type: list
+                        elements: str
+                        default:
+                          - all
+                          - install

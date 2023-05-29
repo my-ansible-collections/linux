@@ -1,0 +1,25 @@
+---
+# This is a playbook to execute Ansible tests.
+
+- name: Verify
+  hosts: all
+  tasks:
+    - name: Path where OpenSSL is installed
+      ansible.builtin.stat:
+        path: '{{ item }}'
+      register: stat_file
+      loop:
+        - /usr/local/bin/openssl
+        - /usr/local/lib{% if ansible_facts.architecture == "x84_64" %}64{% endif %}/libcrypto.a
+        - /usr/local/lib{% if ansible_facts.architecture == "x84_64" %}64{% endif %}/libcrypto.so
+        - /usr/local/lib{% if ansible_facts.architecture == "x84_64" %}64{% endif %}/libcrypto.so.3
+        - /usr/local/lib{% if ansible_facts.architecture == "x84_64" %}64{% endif %}/libssl.a
+        - /usr/local/lib{% if ansible_facts.architecture == "x84_64" %}64{% endif %}/libssl.so
+        - /usr/local/lib{% if ansible_facts.architecture == "x84_64" %}64{% endif %}/libssl.so.3
+        - /usr/local/ssl
+        - /usr/local/share/doc/openssl
+    - name: Check directory exsit
+      ansible.builtin.assert:
+        that:
+          - '{{ item.stat.exists }}'
+      loop: '{{ stat_file.results }}'
