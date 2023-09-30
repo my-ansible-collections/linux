@@ -2,11 +2,14 @@ ansible-compat==4.1.10
 ansible-core==2.15.4
 attrs==23.1.0
 bracex==2.4
+certifi==2023.7.22
 cffi==1.16.0
+charset-normalizer==3.3.0
 click==8.1.7
 click-help-colors==0.9.2
 cryptography==41.0.4
 enrich==1.2.7
+idna==3.4
 Jinja2==3.1.2
 jsonschema==4.19.1
 jsonschema-specifications==2023.7.1
@@ -20,8 +23,10 @@ pycparser==2.21
 Pygments==2.16.1
 PyYAML==6.0.1
 referencing==0.30.2
+requests==2.31.0
 resolvelib==1.0.1
 rich==13.5.3
 rpds-py==0.10.3
 subprocess-tee==0.4.1
+urllib3==2.0.5
 wcmatch==8.5
