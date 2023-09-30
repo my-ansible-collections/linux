@@ -1,0 +1,90 @@
+---
+# tasks file for build
+- name: Filter and return only selected facts
+  ansible.builtin.setup:
+    filter:
+      - ansible_distribution
+      - ansible_distribution_major_version
+
+- name: Validation for distribution
+  ansible.builtin.assert:
+    that:
+      - "'{{ ansible_distribution }}' in ['Ubuntu', 'Amazon', 'AlmaLinux', 'RedHat', 'CentOS']"
+
+- name: Validation for Ubuntu major version
+  when: ansible_distribution == 'Ubuntu'
+  ansible.builtin.assert:
+    that:
+      - "'{{ ansible_distribution_major_version }}' in ['22']"
+
+- name: Validation for AmazonLinux major version
+  when: ansible_distribution == 'Amazon'
+  ansible.builtin.assert:
+    that:
+      - "'{{ ansible_distribution_major_version }}' in ['2023']"
+
+- name: Validation for AlmaLinux major version
+  when: ansible_distribution == 'AlmaLinux'
+  ansible.builtin.assert:
+    that:
+      - "'{{ ansible_distribution_major_version }}' in ['9']"
+
+- name: Validation for RedHat major version
+  when: ansible_distribution == 'RedHat'
+  ansible.builtin.assert:
+    that:
+      - "'{{ ansible_distribution_major_version }}' in ['8', '9']"
+
+- name: Validation for CentOS major version
+  when: ansible_distribution == 'CentOS'
+  ansible.builtin.assert:
+    that:
+      - "'{{ ansible_distribution_major_version }}' in ['7']"
+
+- name: Install package for DPKG
+  when: ansible_distribution in ['Ubuntu']
+  ansible.builtin.apt:
+    name: "{{ build_package.name | union(['ca-certificates', 'tar', 'gzip', 'perl', 'gcc', 'make']) }}"
+    state: present
+
+- name: Install package for RPM (dnf)
+  when: ansible_distribution in ['Amazon', 'AlmaLinux', 'RedHat']
+  ansible.builtin.dnf:
+    name: "{{ build_package.name | union(['ca-certificates', 'tar', 'gzip', 'perl', 'gcc', 'make']) }}"
+    state: present
+
+- name: Install package for RPM (yum)
+  when: ansible_distribution in ['CentOS']
+  ansible.builtin.yum:
+    name: "{{ build_package.name | union(['ca-certificates', 'tar', 'gzip', 'perl', 'perl-IPC-Cmd', 'gcc', 'make']) }}"
+    state: present
+
+- name: Set source path
+  ansible.builtin.set_fact:
+    build_source_path: "{{ build_unarchive.dest }}/{{ build_unarchive.src | basename | regex_search('^(.+)(\\.tar|\\.tar\\.gz|\\.tar\\.bz2|\\.tar\\.xz)$', '\\1') | first }}"
+
+- name: Remove source directory
+  ansible.builtin.file:
+    path: "{{ build_source_path }}"
+    state: absent
+  changed_when: false
+
+- name: Unarchive source
+  ansible.builtin.unarchive:
+    src: "{{ build_unarchive.src }}"
+    dest: "{{ build_unarchive.dest }}"
+    remote_src: "{{ build_unarchive.remote_src }}"
+  changed_when: false
+
+- name: "Configure"
+  ansible.builtin.command:
+    cmd: "./{{ build_configure.name }}{% if build_configure.options is defined %} {{ build_configure.options | join(' ') }}{% endif %}"
+    chdir: "{{ build_source_path }}"
+  changed_when: false
+
+- name: "Make"
+  community.general.make:
+    chdir: "{{ build_source_path }}"
+    target: "{{ item }}"
+  changed_when: false
+  loop: "{{ build_make.targets }}"

@@ -1,0 +1,49 @@
+---
+argument_specs:
+  main:
+    options:
+      build_package:
+        type: "dict"
+        required: false
+        default:
+          name: []
+        options:
+          name:
+            type: "list"
+            elements: "str"
+            required: false
+
+      build_unarchive:
+        type: "dict"
+        required: true
+        options:
+          src:
+            type: "str"
+            required: true
+          dest:
+            type: "str"
+            required: true
+          remote_src:
+            type: "bool"
+            required: true
+
+      build_configure:
+        type: "dict"
+        required: true
+        options:
+          name:
+            type: "str"
+            required: true
+          options:
+            type: "list"
+            elements: "str"
+            required: false
+
+      build_make:
+        type: "dict"
+        required: true
+        options:
+          targets:
+            type: "list"
+            elements: "str"
+            required: true
