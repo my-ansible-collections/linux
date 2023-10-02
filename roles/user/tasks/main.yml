@@ -1,0 +1,90 @@
+---
+# tasks file for user
+- name: Filter and return only selected facts
+  ansible.builtin.setup:
+    filter:
+      - ansible_distribution
+      - ansible_distribution_major_version
+
+- name: Validation for distribution
+  ansible.builtin.assert:
+    that:
+      - "'{{ ansible_distribution }}' in ['Ubuntu', 'Amazon', 'AlmaLinux', 'RedHat', 'CentOS']"
+
+- name: Validation for Ubuntu major version
+  when: ansible_distribution == 'Ubuntu'
+  ansible.builtin.assert:
+    that:
+      - "'{{ ansible_distribution_major_version }}' in ['22']"
+
+- name: Validation for AmazonLinux major version
+  when: ansible_distribution == 'Amazon'
+  ansible.builtin.assert:
+    that:
+      - "'{{ ansible_distribution_major_version }}' in ['2023']"
+
+- name: Validation for AlmaLinux major version
+  when: ansible_distribution == 'AlmaLinux'
+  ansible.builtin.assert:
+    that:
+      - "'{{ ansible_distribution_major_version }}' in ['9']"
+
+- name: Validation for RedHat major version
+  when: ansible_distribution == 'RedHat'
+  ansible.builtin.assert:
+    that:
+      - "'{{ ansible_distribution_major_version }}' in ['8', '9']"
+
+- name: Validation for CentOS major version
+  when: ansible_distribution == 'CentOS'
+  ansible.builtin.assert:
+    that:
+      - "'{{ ansible_distribution_major_version }}' in ['7']"
+
+- name: Install package for DPKG
+  when: ansible_distribution in ['Ubuntu']
+  ansible.builtin.apt:
+    name:
+      - ssh
+    state: present
+
+- name: Install package for RPM (dnf)
+  when: ansible_distribution in ['Amazon', 'AlmaLinux', 'RedHat']
+  ansible.builtin.dnf:
+    name:
+      - openssh
+      - util-linux
+    state: present
+
+- name: Install package for RPM (yum)
+  when: ansible_distribution in ['CentOS']
+  ansible.builtin.yum:
+    name:
+      - openssh
+    state: present
+
+- name: Add user
+  ansible.builtin.user:
+    name: "{{ user_name }}"
+    comment: "{{ user_comment | default(omit) }}"
+    generate_ssh_key: "{{ user_generate_ssh_key }}"
+    group: "{{ user_group | default(omit) }}"
+    groups: "{{ user_groups | default(omit) }}"
+    home: "{{ user_home | default(omit) }}"
+    shell: "{{ user_shell | default(omit) }}"
+    ssh_key_bits: "{{ user_ssh_key_bits | default(omit) }}"
+    ssh_key_comment: "{{ user_ssh_key_comment | default(omit) }}"
+    ssh_key_file: "{{ user_ssh_key_file | default(omit) }}"
+    ssh_key_passphrase: "{{ user_ssh_key_passphrase | default(omit) }}"
+    ssh_key_type: "{{ user_ssh_key_type | default(omit) }}"
+  register: _user_user_result
+
+- name: Add symbolic link to ”~/.local/bin"
+  when: user_home_local_bin is defined
+  ansible.builtin.file:
+    src: "{{ item.src | default(omit) }}"
+    path: "{{ _user_user_result.home }}/.local/bin{% if item.symlink is defined %}/{{ item.symlink }}{% endif %}"
+    owner: "{{ _user_user_result.name }}"
+    group: "{{ _user_user_result.group }}"
+    state: "{{ item.state | default('link') }}"
+  loop: "{{ [{'state': 'directory'}] | union(user_home_local_bin) }}"

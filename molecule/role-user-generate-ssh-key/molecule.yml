@@ -1,0 +1,27 @@
+---
+dependency:
+  name: galaxy
+  options:
+    requirements-file: ../default/requirements.yml
+provisioner:
+  name: ansible
+  playbooks:
+    create: ../default/create.yml
+    destroy: ../default/destroy.yml
+platforms:
+  - name: molecule.role-user-generate-ssh-key.ubuntu2204
+    image: molecule/role-user/ubuntu2204
+    pre_build_image: false
+    dockerfile: ../role-user/docker/ubuntu2204.dockerfile
+  - name: molecule.role-user-generate-ssh-key.amazon2023
+    image: molecule/role-user/amazon2023
+    pre_build_image: false
+    dockerfile: ../role-user/docker/amazon2023.dockerfile
+  - name: molecule.role-user-generate-ssh-key.alma9
+    image: almalinux:9
+  - name: molecule.role-user-generate-ssh-key.rhel9
+    image: redhat/ubi9-init
+  - name: molecule.role-user-generate-ssh-key.rhel8
+    image: redhat/ubi8-init
+  - name: molecule.role-user-generate-ssh-key.cent7
+    image: centos:7

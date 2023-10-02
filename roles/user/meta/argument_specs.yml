@@ -1,0 +1,53 @@
+---
+argument_specs:
+  main:
+    options:
+      user_name:
+        type: "str"
+        required: true
+      user_comment:
+        type: "str"
+        required: false
+      user_generate_ssh_key:
+        type: "str"
+        required: false
+        default: false
+      user_group:
+        type: "str"
+        required: false
+      user_groups:
+        type: "list"
+        elements: "str"
+        required: false
+      user_home:
+        type: "str"
+        required: false
+      user_shell:
+        type: "str"
+        required: false
+      user_ssh_key_bits:
+        type: "int"
+        required: false
+      user_ssh_key_comment:
+        type: "str"
+        required: false
+      user_ssh_key_file:
+        type: "str"
+        required: false
+      user_ssh_key_passphrase:
+        type: "str"
+        required: false
+      user_ssh_key_type:
+        type: "str"
+        required: false
+      user_home_local_bin:
+        type: "list"
+        elements: "dict"
+        required: false
+        options:
+          src:
+            type: "str"
+            required: true
+          symlink:
+            type: "str"
+            required: true

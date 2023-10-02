@@ -1,0 +1,35 @@
+---
+dependency:
+  name: galaxy
+  options:
+    requirements-file: ../default/requirements.yml
+provisioner:
+  name: ansible
+  playbooks:
+    create: ../default/create.yml
+    destroy: ../default/destroy.yml
+platforms:
+  - name: molecule.role-user-home-local-bin.ubuntu2204
+    image: molecule/role-user-home-local-bin/ubuntu2204
+    pre_build_image: false
+    dockerfile: ../role-user-home-local-bin/docker/ubuntu2204.dockerfile
+  - name: molecule.role-user-home-local-bin.amazon2023
+    image: molecule/role-user-home-local-bin/amazon2023
+    pre_build_image: false
+    dockerfile: ../role-user-home-local-bin/docker/amazon2023.dockerfile
+  - name: molecule.role-user-home-local-bin.alma9
+    image: molecule/role-user-home-local-bin/alma9
+    pre_build_image: false
+    dockerfile: ../role-user-home-local-bin/docker/alma9.dockerfile
+  - name: molecule.role-user-home-local-bin.rhel9
+    image: molecule/role-user-home-local-bin/rhel9
+    pre_build_image: false
+    dockerfile: ../role-user-home-local-bin/docker/rhel9.dockerfile
+  - name: molecule.role-user-home-local-bin.rhel8
+    image: molecule/role-user-home-local-bin/rhel8
+    pre_build_image: false
+    dockerfile: ../role-user-home-local-bin/docker/rhel8.dockerfile
+  - name: molecule.role-user-home-local-bin.cent7
+    image: molecule/role-user-home-local-bin/cent7
+    pre_build_image: false
+    dockerfile: ../role-user-home-local-bin/docker/cent7.dockerfile

@@ -1,0 +1,35 @@
+---
+- name: Verify
+  hosts: molecule
+  gather_facts: false
+  tasks:
+    - name: Filter and return only selected facts
+      ansible.builtin.setup:
+        filter:
+          - ansible_architecture
+
+    - name: cat /etc/passwd
+      ansible.builtin.command: cat /etc/passwd
+      register: command_return
+
+    - name: Check user
+      ansible.builtin.assert:
+        that: command_return.stdout_lines | select('match', '^hoge:.*') | list | length == 1
+        fail_msg: "{{ command_return.stdout_lines | to_json }}"
+
+    - name: List ssh key
+      ansible.builtin.stat:
+        path: "{{ item }}"
+      register: stat_return
+      loop:
+        - /home/hoge/.ssh
+        - /home/hoge/.ssh/id_rsa
+        - /home/hoge/.ssh/id_rsa.pub
+
+    - name: Check ssh key
+      ansible.builtin.assert:
+        that: not item.stat.exists
+        fail_msg: "{{ item | to_json }}"
+      loop: "{{ stat_return.results }}"
+      loop_control:
+        label: "{{ item.item }}"
