@@ -1,0 +1,32 @@
+---
+- name: Verify
+  hosts: molecule
+  gather_facts: false
+  tasks:
+    - name: Filter and return only selected facts
+      ansible.builtin.setup:
+        filter:
+          - ansible_distribution
+
+    - name: Execute "systemctl status"
+      ansible.builtin.command: systemctl status "{% if ansible_distribution == 'Ubuntu' %}apache2{% else %}httpd{% endif %}"
+      register: systemctl_return
+      changed_when: false
+
+    - name: Check systemctl status result
+      ansible.builtin.assert:
+        that:
+          - "'{% if ansible_distribution == 'Ubuntu' %}apache2{% else %}httpd{% endif %}.service; enabled;' in systemctl_return.stdout_lines[1]"
+          - "'Active: active (running)' in systemctl_return.stdout_lines[2]"
+        fail_msg: "{{ systemctl_return.stdout }}"
+
+    - name: Execute "curl http://localhost"
+      ansible.builtin.command: curl http://localhost
+      register: curl_return
+      changed_when: false
+
+    - name: Check curl result
+      ansible.builtin.assert:
+        that:
+          - curl_return.rc == 0
+        fail_msg: "{{ curl_return | to_json }}"
