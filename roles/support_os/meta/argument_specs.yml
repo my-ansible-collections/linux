@@ -1,0 +1,29 @@
+---
+argument_specs:
+  main:
+    options:
+      support_os_list:
+        type: "list"
+        required: false
+        default:
+          - distribution: Ubuntu
+            major_version: "22"
+          - distribution: AmazonLinux
+            major_version: "2023"
+          - distribution: AlmaLinux
+            major_version: "9"
+          - distribution: RedHat
+            major_version: ["8", "9"]
+          - distribution: CentOS
+            major_version: "7"
+        elements: "dict"
+        options:
+          distribution:
+            description: Distribution name to be supported.
+            type: "str"
+            required: true
+          major_version:
+            description: Distribution major version to be supported.
+            type: "list"
+            required: true
+            elements: "str"

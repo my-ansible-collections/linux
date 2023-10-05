@@ -1,32 +1,8 @@
 ---
 # tasks file for hostname
-- name: Filter and return only selected facts
-  ansible.builtin.setup:
-    filter:
-      - ansible_distribution
-      - ansible_distribution_major_version
-
-- name: Validation for distribution
-  ansible.builtin.assert:
-    that:
-      - "'{{ ansible_distribution }}' in ['Ubuntu', 'Amazon', 'AlmaLinux', 'RedHat', 'CentOS']"
-
-- name: "Validation for {{ item.distribution }} major version"
-  when: ansible_distribution == item.distribution
-  ansible.builtin.assert:
-    that:
-      - ansible_distribution_major_version in item.distribution_major_version
-  loop:
-    - distribution: Ubuntu
-      distribution_major_version: ['22']
-    - distribution: Amazon
-      distribution_major_version: ['2023']
-    - distribution: AlmaLinux
-      distribution_major_version: ['9']
-    - distribution: RedHat
-      distribution_major_version: ['8', '9']
-    - distribution: CentOS
-      distribution_major_version: ['7']
+- name: Import role "support_os"
+  ansible.builtin.import_role:
+    name: my_ansible_collections.linux.support_os
 
 - name: Install package for DPKG
   when: ansible_distribution in ['Ubuntu']

@@ -1,0 +1,23 @@
+---
+dependency:
+  name: galaxy
+  options:
+    requirements-file: ../default/requirements.yml
+provisioner:
+  name: ansible
+  playbooks:
+    create: ../default/create.yml
+    destroy: ../default/destroy.yml
+platforms:
+  - name: molecule.role-support_os.ubuntu2204
+    image: molecule/role-support_os/ubuntu2204
+    pre_build_image: false
+    dockerfile: ../role-support_os/docker/ubuntu2204.dockerfile
+  - name: molecule.role-support_os.alma9
+    image: almalinux:9
+  - name: molecule.role-support_os.rhel9
+    image: redhat/ubi9-init
+  - name: molecule.role-support_os.rhel8
+    image: redhat/ubi8-init
+  - name: molecule.role-support_os.cent7
+    image: centos:7

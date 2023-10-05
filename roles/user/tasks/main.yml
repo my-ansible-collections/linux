@@ -1,45 +1,8 @@
 ---
 # tasks file for user
-- name: Filter and return only selected facts
-  ansible.builtin.setup:
-    filter:
-      - ansible_distribution
-      - ansible_distribution_major_version
-
-- name: Validation for distribution
-  ansible.builtin.assert:
-    that:
-      - "'{{ ansible_distribution }}' in ['Ubuntu', 'Amazon', 'AlmaLinux', 'RedHat', 'CentOS']"
-
-- name: Validation for Ubuntu major version
-  when: ansible_distribution == 'Ubuntu'
-  ansible.builtin.assert:
-    that:
-      - "'{{ ansible_distribution_major_version }}' in ['22']"
-
-- name: Validation for AmazonLinux major version
-  when: ansible_distribution == 'Amazon'
-  ansible.builtin.assert:
-    that:
-      - "'{{ ansible_distribution_major_version }}' in ['2023']"
-
-- name: Validation for AlmaLinux major version
-  when: ansible_distribution == 'AlmaLinux'
-  ansible.builtin.assert:
-    that:
-      - "'{{ ansible_distribution_major_version }}' in ['9']"
-
-- name: Validation for RedHat major version
-  when: ansible_distribution == 'RedHat'
-  ansible.builtin.assert:
-    that:
-      - "'{{ ansible_distribution_major_version }}' in ['8', '9']"
-
-- name: Validation for CentOS major version
-  when: ansible_distribution == 'CentOS'
-  ansible.builtin.assert:
-    that:
-      - "'{{ ansible_distribution_major_version }}' in ['7']"
+- name: Import role "support_os"
+  ansible.builtin.import_role:
+    name: my_ansible_collections.linux.support_os
 
 - name: Install package for DPKG
   when: ansible_distribution in ['Ubuntu']

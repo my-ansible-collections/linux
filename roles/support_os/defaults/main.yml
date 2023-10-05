@@ -1,0 +1,13 @@
+---
+# defaults file for support_os
+support_os_list:
+  - distribution: Ubuntu
+    major_version: "22"
+  - distribution: Amazon
+    major_version: "2023"
+  - distribution: AlmaLinux
+    major_version: "9"
+  - distribution: RedHat
+    major_version: ["8", "9"]
+  - distribution: CentOS
+    major_version: "7"

@@ -1,0 +1,21 @@
+---
+# tasks file for support_os
+- name: Filter and return only selected facts
+  ansible.builtin.setup:
+    filter:
+      - ansible_distribution
+      - ansible_distribution_major_version
+
+- name: Validate distribution
+  ansible.builtin.assert:
+    that:
+      - "ansible_distribution in {{ support_os_list | map(attribute='distribution') | list }}"
+    fail_msg: "{{ ansible_distribution }} not supported"
+
+- name: Validate major version
+  when: ansible_distribution == item.distribution
+  ansible.builtin.assert:
+    that:
+      - ansible_distribution_major_version in item.major_version
+    fail_msg: "{{ ansible_distribution }} {{ ansible_distribution_major_version }} not supported"
+  loop: "{{ support_os_list }}"
