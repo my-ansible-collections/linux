@@ -2,39 +2,45 @@
 argument_specs:
   main:
     options:
-      build_package:
+      build_required_package:
         type: "dict"
         required: false
         default:
-          name: []
+          names: []
         options:
-          name:
+          names:
+            description: Name of package required for source build.
             type: "list"
-            elements: "str"
             required: false
+            elements: "str"
 
-      build_unarchive:
+      build_archived_source:
         type: "dict"
         required: true
         options:
+          remote_src:
+            description: Whether the archived source is on a remote server.
+            type: "bool"
+            required: true
           src:
+            description: Archived source path. If remote_src=true, the path on the remote server or download URL; if remote_src=false, the local path.
             type: "str"
             required: true
           dest:
+            description: Path to unarchive the source.
             type: "str"
             required: true
-          remote_src:
-            type: "bool"
-            required: true
 
-      build_configure:
+      build_configure_script:
         type: "dict"
         required: true
         options:
           name:
+            description: Name of configure script.
             type: "str"
             required: true
           options:
+            description: Option of configure script.
             type: "list"
             elements: "str"
             required: false
@@ -44,6 +50,7 @@ argument_specs:
         required: true
         options:
           targets:
+            description: Targets of make.
             type: "list"
-            elements: "str"
             required: true
+            elements: "str"

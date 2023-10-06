@@ -31,13 +31,13 @@
 
     - name: Testing role
       ansible.builtin.include_role:
-        name: ../../roles/build
+        name: my_ansible_collections.linux.build
       vars:
-        build_unarchive:
+        build_archived_source:
           src: https://www.openssl.org/source/openssl-3.1.3.tar.gz
           dest: /usr/local/src
           remote_src: true
-        build_configure:
+        build_configure_script:
           name: Configure
         build_make:
           targets:

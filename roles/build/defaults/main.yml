@@ -1,4 +1,4 @@
 ---
 # defaults file for build
-build_package:
-  name: []
+build_required_package:
+  names: []

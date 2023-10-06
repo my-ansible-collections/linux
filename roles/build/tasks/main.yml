@@ -7,47 +7,47 @@
 - name: Install package for DPKG
   when: ansible_distribution in ['Ubuntu']
   ansible.builtin.apt:
-    name: "{{ build_package.name | union(['ca-certificates', 'tar', 'gzip', 'perl', 'gcc', 'make']) }}"
+    name: "{{ build_required_package.names | union(['ca-certificates', 'tar', 'gzip', 'perl', 'gcc', 'make']) }}"
     state: present
 
 - name: Install package for RPM (dnf)
   when: ansible_distribution in ['Amazon', 'AlmaLinux', 'RedHat']
   ansible.builtin.dnf:
-    name: "{{ build_package.name | union(['ca-certificates', 'tar', 'gzip', 'perl', 'gcc', 'make']) }}"
+    name: "{{ build_required_package.names | union(['ca-certificates', 'tar', 'gzip', 'perl', 'gcc', 'make']) }}"
     state: present
 
 - name: Install package for RPM (yum)
   when: ansible_distribution in ['CentOS']
   ansible.builtin.yum:
-    name: "{{ build_package.name | union(['ca-certificates', 'tar', 'gzip', 'perl', 'perl-IPC-Cmd', 'gcc', 'make']) }}"
+    name: "{{ build_required_package.names | union(['ca-certificates', 'tar', 'gzip', 'perl', 'perl-IPC-Cmd', 'gcc', 'make']) }}"
     state: present
 
-- name: Set source path
+- name: Set fact unarchive source path
   ansible.builtin.set_fact:
-    build_source_path: "{{ build_unarchive.dest }}/{{ build_unarchive.src | basename | regex_search('^(.+)(\\.tar|\\.tar\\.gz|\\.tar\\.bz2|\\.tar\\.xz)$', '\\1') | first }}"
+    build_unarchive_source_path: "{{ build_archived_source.dest }}/{{ build_archived_source.src | basename | regex_search('^(.+)(\\.tar|\\.tar\\.gz|\\.tar\\.bz2|\\.tar\\.xz)$', '\\1') | first }}"
 
-- name: Remove source directory
+- name: Remove unarchive source path
   ansible.builtin.file:
-    path: "{{ build_source_path }}"
+    path: "{{ build_unarchive_source_path }}"
     state: absent
   changed_when: false
 
 - name: Unarchive source
   ansible.builtin.unarchive:
-    src: "{{ build_unarchive.src }}"
-    dest: "{{ build_unarchive.dest }}"
-    remote_src: "{{ build_unarchive.remote_src }}"
+    src: "{{ build_archived_source.src }}"
+    dest: "{{ build_archived_source.dest }}"
+    remote_src: "{{ build_archived_source.remote_src }}"
   changed_when: false
 
-- name: "Configure"
+- name: Execute configure script
   ansible.builtin.command:
-    cmd: "./{{ build_configure.name }}{% if build_configure.options is defined %} {{ build_configure.options | join(' ') }}{% endif %}"
-    chdir: "{{ build_source_path }}"
+    cmd: "./{{ build_configure_script.name }}{% if build_configure_script.options is defined %} {{ build_configure_script.options | join(' ') }}{% endif %}"
+    chdir: "{{ build_unarchive_source_path }}"
   changed_when: false
 
-- name: "Make"
+- name: Execute command "make"
   community.general.make:
-    chdir: "{{ build_source_path }}"
+    chdir: "{{ build_unarchive_source_path }}"
     target: "{{ item }}"
   changed_when: false
   loop: "{{ build_make.targets }}"
