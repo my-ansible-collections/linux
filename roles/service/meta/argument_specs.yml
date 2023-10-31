@@ -2,9 +2,12 @@
 argument_specs:
   main:
     options:
-      service_name:
+      service_package:
         type: "str"
         required: true
+      service_name:
+        type: "str"
+        required: false
       service_state:
         type: "str"
         required: false

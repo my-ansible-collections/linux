@@ -40,6 +40,7 @@
       ansible.builtin.include_role:
         name: ../../roles/service
       vars:
+        service_package: "{% if ansible_distribution == 'Ubuntu' %}apache2{% else %}httpd{% endif %}"
         service_name: "{% if ansible_distribution == 'Ubuntu' %}apache2{% else %}httpd{% endif %}"
         service_state: started
         service_enabled: true

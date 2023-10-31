@@ -7,23 +7,23 @@
 - name: Install package for DPKG
   when: ansible_distribution in ['Ubuntu']
   ansible.builtin.apt:
-    name: "{{ service_name }}"
+    name: "{{ service_package }}"
     state: present
 
 - name: Install package for RPM (dnf)
   when: ansible_distribution in ['Amazon', 'AlmaLinux', 'RedHat']
   ansible.builtin.dnf:
-    name: "{{ service_name }}"
+    name: "{{ service_package }}"
     state: present
 
 - name: Install package for RPM (yum)
   when: ansible_distribution in ['CentOS']
   ansible.builtin.yum:
-    name: "{{ service_name }}"
+    name: "{{ service_package }}"
     state: present
 
 - name: Set systemd
-  when: service_state is defined and service_enabled is defined
+  when: service_name is defined and service_state is defined and service_enabled is defined
   ansible.builtin.systemd_service:
     name: "{{ service_name }}"
     state: "{{ service_state }}"

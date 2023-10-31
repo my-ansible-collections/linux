@@ -38,4 +38,4 @@
       ansible.builtin.include_role:
         name: ../../roles/service
       vars:
-        service_name: rsync
+        service_package: rsync

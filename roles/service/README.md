@@ -23,11 +23,15 @@ Role Variables
 
 Required:
 
+- `service_package`: string
+
+  Name of the package containing the service.
+
+Optional：
+
 - `service_name`: string
 
   Service name.
-
-Optional：
 
 - `service_state`: string
 
@@ -180,6 +184,7 @@ An example of using this role is as follows:
 - hosts: servers
   roles:
     - role: my_ansible_collections.linux.service
+      service_package: httpd
       service_name: httpd
       service_state: started
       service_enabled: true
