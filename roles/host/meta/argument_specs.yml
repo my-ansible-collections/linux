@@ -1,0 +1,10 @@
+---
+argument_specs:
+  main:
+    options:
+      host_timezone:
+        type: "str"
+        required: false
+      host_name:
+        type: "str"
+        required: false

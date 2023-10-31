@@ -1,0 +1,24 @@
+---
+- name: Verify
+  hosts: molecule
+  gather_facts: false
+  tasks:
+    - name: Check timezone
+      ansible.builtin.command: timedatectl
+      register: result_timedatectl
+      changed_when: false
+
+    - name: Timezone assertion
+      ansible.builtin.assert:
+        that: "'Time zone: Asia/Tokyo (JST, +0900)' in result_timedatectl.stdout"
+        fail_msg: "{{ result_timedatectl.stdout }}"
+
+    - name: Check hostname
+      ansible.builtin.command: hostname
+      register: result_hostname
+      changed_when: false
+
+    - name: Timezone assertion
+      ansible.builtin.assert:
+        that: "'hoge' in result_hostname.stdout"
+        fail_msg: "{{ result_hostname.stdout }}"

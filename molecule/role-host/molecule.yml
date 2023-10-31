@@ -1,0 +1,32 @@
+---
+dependency:
+  name: galaxy
+  options:
+    requirements-file: ../default/requirements.yml
+provisioner:
+  name: ansible
+platforms:
+  - name: ubuntu2204
+    ip: "54.85.139.82"
+    user: ubuntu
+    ssh_private_key_file: ../../tool/build-test-server/build-test-server.pem
+  - name: amazon2023
+    ip: "3.210.29.41"
+    user: ec2-user
+    ssh_private_key_file: ../../tool/build-test-server/build-test-server.pem
+  - name: alma9
+    ip: "35.172.80.188"
+    user: ec2-user
+    ssh_private_key_file: ../../tool/build-test-server/build-test-server.pem
+  - name: rhel9
+    ip: "52.87.99.49"
+    user: ec2-user
+    ssh_private_key_file: ../../tool/build-test-server/build-test-server.pem
+  - name: rhel8
+    ip: "18.214.52.10"
+    user: ec2-user
+    ssh_private_key_file: ../../tool/build-test-server/build-test-server.pem
+  - name: cent7
+    ip: "54.204.115.7"
+    user: centos
+    ssh_private_key_file: ../../tool/build-test-server/build-test-server.pem
