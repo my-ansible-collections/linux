@@ -1,7 +1,62 @@
 ---
 # handlers file for build
-- name: Handler service state
-  when: service_handler_state is defined
+- name: Handler of role "service" 0
+  when: service_list[0].name is defined and service_list[0].handler is defined
   ansible.builtin.systemd_service:
-    name: "{{ service_name }}"
-    state: "{{ service_handler_state }}"
+    name: "{{ service_list[0].name }}"
+    state: "{{ service_list[0].handler.state }}"
+
+- name: Handler of role "service" 1
+  when: service_list[1].name is defined and service_list[1].handler is defined
+  ansible.builtin.systemd_service:
+    name: "{{ service_list[1].name }}"
+    state: "{{ service_list[1].handler.state }}"
+
+- name: Handler of role "service" 2
+  when: service_list[2].name is defined and service_list[2].handler is defined
+  ansible.builtin.systemd_service:
+    name: "{{ service_list[2].name }}"
+    state: "{{ service_list[2].handler.state }}"
+
+- name: Handler of role "service" 3
+  when: service_list[3].name is defined and service_list[3].handler is defined
+  ansible.builtin.systemd_service:
+    name: "{{ service_list[3].name }}"
+    state: "{{ service_list[3].handler.state }}"
+
+- name: Handler of role "service" 4
+  when: service_list[4].name is defined and service_list[4].handler is defined
+  ansible.builtin.systemd_service:
+    name: "{{ service_list[4].name }}"
+    state: "{{ service_list[4].handler.state }}"
+
+- name: Handler of role "service" 5
+  when: service_list[5].name is defined and service_list[5].handler is defined
+  ansible.builtin.systemd_service:
+    name: "{{ service_list[5].name }}"
+    state: "{{ service_list[5].handler.state }}"
+
+- name: Handler of role "service" 6
+  when: service_list[6].name is defined and service_list[6].handler is defined
+  ansible.builtin.systemd_service:
+    name: "{{ service_list[6].name }}"
+    state: "{{ service_list[6].handler.state }}"
+
+- name: Handler of role "service" 7
+  when: service_list[7].name is defined and service_list[7].handler is defined
+  ansible.builtin.systemd_service:
+    name: "{{ service_list[7].name }}"
+    state: "{{ service_list[7].handler.state }}"
+
+- name: Handler of role "service" 8
+  when: service_list[8].name is defined and service_list[8].handler is defined
+  ansible.builtin.systemd_service:
+    name: "{{ service_list[8].name }}"
+    state: "{{ service_list[8].handler.state }}"
+
+- name: Handler of role "service" 9
+  when: service_list[9].name is defined and service_list[9].handler is defined
+  ansible.builtin.systemd_service:
+    name: "{{ service_list[9].name }}"
+    state: "{{ service_list[9].handler.state }}"
+

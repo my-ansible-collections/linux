@@ -7,30 +7,58 @@
 - name: Install package for DPKG
   when: ansible_distribution in ['Ubuntu']
   ansible.builtin.apt:
-    name: "{{ service_package }}"
+    name: >-
+      {%- set tmplist = [] -%}
+      {%- for i in range(service_list|length) -%}
+      {%-   set _ = tmplist.append(service_list[i].package) -%}
+      {%- endfor -%}
+      {{ tmplist }}
     state: present
 
 - name: Install package for RPM (dnf)
   when: ansible_distribution in ['Amazon', 'AlmaLinux', 'RedHat']
   ansible.builtin.dnf:
-    name: "{{ service_package }}"
+    name: >-
+      {%- set tmplist = [] -%}
+      {%- for i in range(service_list|length) -%}
+      {%-   set _ = tmplist.append(service_list[i].package) -%}
+      {%- endfor -%}
+      {{ tmplist }}
     state: present
 
 - name: Install package for RPM (yum)
   when: ansible_distribution in ['CentOS']
   ansible.builtin.yum:
-    name: "{{ service_package }}"
+    name: >-
+      {%- set tmplist = [] -%}
+      {%- for i in range(service_list|length) -%}
+      {%-   set _ = tmplist.append(service_list[i].package) -%}
+      {%- endfor -%}
+      {{ tmplist }}
     state: present
 
 - name: Set systemd
-  when: service_name is defined and service_state is defined and service_enabled is defined
+  when: item.name is defined and item.state is defined and item.enabled is defined
   ansible.builtin.systemd_service:
-    name: "{{ service_name }}"
-    state: "{{ service_state }}"
-    enabled: "{{ service_enabled }}"
+    name: "{{ item.name }}"
+    state: "{{ item.state }}"
+    enabled: "{{ item.enabled }}"
+  loop: "{{ service_list }}"
+
+- name: Set fact copy conf list
+  ansible.builtin.set_fact:
+    service_copy_conf_list: >-
+      {%- set tmplist = [] -%}
+      {%- for i in range(service_list|length) -%}
+      {%-   if service_list[i].copy_conf is defined -%}
+      {%-     for j in range(service_list[i].copy_conf|length) -%}
+      {%-       set _ = tmplist.append(service_list[i].copy_conf[j]|combine({'handler_name':'Handler of role "service" ' + i|string})) -%}
+      {%-     endfor -%}
+      {%-   endif -%}
+      {%- endfor -%}
+      {{ tmplist }}
 
 - name: Copy conf file
-  when: service_copy_conf is defined
   ansible.builtin.copy:
     src: "{{ item.src }}"
     dest: "{{ item.dest }}"
@@ -38,11 +66,23 @@
     owner: "{{ item.owner | default(omit) }}"
     group: "{{ item.group | default(omit) }}"
     mode: "{{ item.mode | default(omit) }}"
-  loop: "{{ service_copy_conf }}"
-  notify: Handler service state
+  loop: "{{ service_copy_conf_list }}"
+  notify: "{{ item.handler_name }}"
+
+- name: Set fact template conf list
+  ansible.builtin.set_fact:
+    service_template_conf_list: >-
+      {%- set tmplist = [] -%}
+      {%- for i in range(service_list|length) -%}
+      {%-   if service_list[i].template_conf is defined -%}
+      {%-     for j in range(service_list[i].template_conf|length) -%}
+      {%-       set _ = tmplist.append(service_list[i].template_conf[j]|combine({'handler_name':'Handler of role "service" ' + i|string})) -%}
+      {%-     endfor -%}
+      {%-   endif -%}
+      {%- endfor -%}
+      {{ tmplist }}
 
 - name: Template conf file out to a target host
-  when: service_template_conf is defined
   ansible.builtin.template:
     src: "{{ item.src }}"
     dest: "{{ item.dest }}"
@@ -50,11 +90,23 @@
     owner: "{{ item.owner | default(omit) }}"
     group: "{{ item.group | default(omit) }}"
     mode: "{{ item.mode | default(omit) }}"
-  loop: "{{ service_template_conf }}"
-  notify: Handler service state
+  loop: "{{ service_template_conf_list }}"
+  notify: "{{ item.handler_name }}"
+
+- name: Set fact Linefile conf list
+  ansible.builtin.set_fact:
+    service_linefile_conf_list: >-
+      {%- set tmplist = [] -%}
+      {%- for i in range(service_list|length) -%}
+      {%-   if service_list[i].lineinfile_conf is defined -%}
+      {%-     for j in range(service_list[i].lineinfile_conf|length) -%}
+      {%-       set _ = tmplist.append(service_list[i].lineinfile_conf[j]|combine({'handler_name':'Handler of role "service" ' + i|string})) -%}
+      {%-     endfor -%}
+      {%-   endif -%}
+      {%- endfor -%}
+      {{ tmplist }}
 
 - name: Linefile conf file
-  when: service_lineinfile_conf is defined
   ansible.builtin.lineinfile:
     path: "{{ item.path }}"
     regexp: "{{ item.regexp }}"
@@ -65,5 +117,5 @@
     owner: "{{ item.owner | default(omit) }}"
     group: "{{ item.group | default(omit) }}"
     mode: "{{ item.mode | default(omit) }}"
-  loop: "{{ service_lineinfile_conf }}"
-  notify: Handler service state
+  loop: "{{ service_linefile_conf_list }}"
+  notify: "{{ item.handler_name }}"

@@ -36,14 +36,16 @@
 
     - name: Testing role
       ansible.builtin.include_role:
-        name: ../../roles/service
+        name: my_ansible_collections.linux.service
       vars:
-        service_package: "{% if ansible_distribution == 'Ubuntu' %}apache2{% else %}httpd{% endif %}"
-        service_name: "{% if ansible_distribution == 'Ubuntu' %}apache2{% else %}httpd{% endif %}"
-        service_state: started
-        service_enabled: true
-        service_copy_conf:
-          - src: "./file/{% if ansible_distribution == 'Ubuntu' %}ports.ubuntu2204.conf{% else %}httpd.amazon2023.conf{% endif %}"
-            dest: "/etc/{% if ansible_distribution == 'Ubuntu' %}apache2/ports.conf{% else %}httpd/conf/httpd.conf{% endif %}"
-            backup: true
-        service_handler_state: reloaded
+        service_list:
+          - package: "{% if ansible_distribution == 'Ubuntu' %}apache2{% else %}httpd{% endif %}"
+            name: "{% if ansible_distribution == 'Ubuntu' %}apache2{% else %}httpd{% endif %}"
+            state: started
+            enabled: true
+            copy_conf:
+              - src: "./file/{% if ansible_distribution == 'Ubuntu' %}ports.ubuntu2204.conf{% else %}httpd.amazon2023.conf{% endif %}"
+                dest: "/etc/{% if ansible_distribution == 'Ubuntu' %}apache2/ports.conf{% else %}httpd/conf/httpd.conf{% endif %}"
+                backup: true
+            handler:
+              state: reloaded

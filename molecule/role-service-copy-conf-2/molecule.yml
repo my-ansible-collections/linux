@@ -9,32 +9,32 @@ provisioner:
     create: ../default/create.yml
     destroy: ../default/destroy.yml
 platforms:
-  - name: molecule.role-service-lineinfile-conf.ubuntu2204
+  - name: molecule.role-service-copy-conf-2.ubuntu2204
     image: molecule/role-service/ubuntu2204
     pre_build_image: false
     dockerfile: ../role-service/docker/ubuntu2204.dockerfile
     command: /usr/sbin/init
     privileged: true
-  - name: molecule.role-service-lineinfile-conf.amazon2023
+  - name: molecule.role-service-copy-conf-2.amazon2023
     image: molecule/role-service/amazon2023
     pre_build_image: false
     dockerfile: ../role-service/docker/amazon2023.dockerfile
     command: /usr/sbin/init
     privileged: true
-  - name: molecule.role-service-lineinfile-conf.alma9
+  - name: molecule.role-service-copy-conf-2.alma9
     image: almalinux:9
     command: /usr/sbin/init
     privileged: true
-  - name: molecule.role-service-lineinfile-conf.rhel9
+  - name: molecule.role-service-copy-conf-2.rhel9
     image: redhat/ubi9-init
     command: /usr/sbin/init
     privileged: true
-  - name: molecule.role-service-lineinfile-conf.rhel8
+  - name: molecule.role-service-copy-conf-2.rhel8
     image: redhat/ubi8-init
     command: /usr/sbin/init
     privileged: true
   # Commented out because systemctl does not start sshd
-  # - name: molecule.role-service-lineinfile-conf.cent7
+  # - name: molecule.role-service-copy-conf-2.cent7
   #   image: centos:7
   #   command: /usr/sbin/init
   #   privileged: true

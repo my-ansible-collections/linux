@@ -36,6 +36,7 @@
 
     - name: Testing role
       ansible.builtin.include_role:
-        name: ../../roles/service
+        name: my_ansible_collections.linux.service
       vars:
-        service_package: rsync
+        service_list:
+          - package: rsync

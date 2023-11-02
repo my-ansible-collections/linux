@@ -2,96 +2,105 @@
 argument_specs:
   main:
     options:
-      service_package:
-        type: "str"
+      service_list:
+        type: "list"
+        elements: "dict"
         required: true
-      service_name:
-        type: "str"
-        required: false
-      service_state:
-        type: "str"
-        required: false
-      service_enabled:
-        type: "bool"
-        required: false
-      service_copy_conf:
-        type: "list"
-        elements: "dict"
-        required: false
         options:
-          src:
+          package:
             type: "str"
             required: true
-          dest:
+          name:
             type: "str"
-            required: true
-          backup:
+            required: false
+          state:
+            type: "str"
+            required: false
+          enabled:
             type: "bool"
             required: false
-          owner:
-            type: "str"
+          copy_conf:
+            type: "list"
+            elements: "dict"
             required: false
-          group:
-            type: "str"
+            options:
+              src:
+                type: "str"
+                required: true
+              dest:
+                type: "str"
+                required: true
+              backup:
+                type: "bool"
+                required: false
+              owner:
+                type: "str"
+                required: false
+              group:
+                type: "str"
+                required: false
+              mode:
+                type: "str"
+                required: false
+          template_conf:
+            type: "list"
+            elements: "dict"
             required: false
-          mode:
-            type: "str"
+            options:
+              src:
+                type: "str"
+                required: true
+              dest:
+                type: "str"
+                required: true
+              backup:
+                type: "bool"
+                required: false
+              owner:
+                type: "str"
+                required: false
+              group:
+                type: "str"
+                required: false
+              mode:
+                type: "str"
+                required: false
+          lineinfile_conf:
+            type: "list"
+            elements: "dict"
             required: false
-      service_template_conf:
-        type: "list"
-        elements: "dict"
-        required: false
-        options:
-          src:
-            type: "str"
-            required: true
-          dest:
-            type: "str"
-            required: true
-          backup:
-            type: "bool"
+            options:
+              path:
+                type: "str"
+                required: true
+              regexp:
+                type: "str"
+                required: true
+              line:
+                type: "str"
+                required: true
+              insertafter:
+                type: "str"
+                required: false
+              insertbefore:
+                type: "str"
+                required: false
+              backup:
+                type: "bool"
+                required: false
+              owner:
+                type: "str"
+                required: false
+              group:
+                type: "str"
+                required: false
+              mode:
+                type: "str"
+                required: false
+          handler:
+            type: "dict"
             required: false
-          owner:
-            type: "str"
-            required: false
-          group:
-            type: "str"
-            required: false
-          mode:
-            type: "str"
-            required: false
-      service_lineinfile_conf:
-        type: "list"
-        elements: "dict"
-        required: false
-        options:
-          path:
-            type: "str"
-            required: true
-          regexp:
-            type: "str"
-            required: true
-          line:
-            type: "str"
-            required: true
-          insertafter:
-            type: "str"
-            required: false
-          insertbefore:
-            type: "str"
-            required: false
-          backup:
-            type: "bool"
-            required: false
-          owner:
-            type: "str"
-            required: false
-          group:
-            type: "str"
-            required: false
-          mode:
-            type: "str"
-            required: false
-      service_handler_state:
-        type: "str"
-        required: false
+            options:
+              state:
+                type: "str"
+                required: true

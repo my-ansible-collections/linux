@@ -43,10 +43,9 @@
             name: "{% if ansible_distribution == 'Ubuntu' %}apache2{% else %}httpd{% endif %}"
             state: started
             enabled: true
-            lineinfile_conf:
-              - path: "/etc/{% if ansible_distribution == 'Ubuntu' %}apache2/ports.conf{% else %}httpd/conf/httpd.conf{% endif %}"
-                regexp: '^\s*Listen 80\s*$'
-                line: Listen 8080
+            copy_conf:
+              - src: "./file/{% if ansible_distribution == 'Ubuntu' %}ports.conf.ubuntu2204{% else %}httpd.conf.amazon2023{% endif %}"
+                dest: "/etc/{% if ansible_distribution == 'Ubuntu' %}apache2/ports.conf{% else %}httpd/conf/httpd.conf{% endif %}"
                 backup: true
             handler:
               state: reloaded
@@ -54,14 +53,9 @@
             name: sshd
             state: started
             enabled: true
-            lineinfile_conf:
-              - path: /etc/ssh/sshd_config
-                regexp: '^#?PermitEmptyPasswords (no|yes)\s*$'
-                line: PermitEmptyPasswords yes
-                backup: true
-              - path: /etc/ssh/sshd_config
-                regexp: '^#?PasswordAuthentication (no|yes)\s*$'
-                line: PasswordAuthentication yes
+            copy_conf:
+              - src: "./file/sshd_config.{% if ansible_distribution == 'Ubuntu' %}ubuntu2024{% else %}amazon2023{% endif %}"
+                dest: /etc/ssh/sshd_config
                 backup: true
             handler:
               state: reloaded

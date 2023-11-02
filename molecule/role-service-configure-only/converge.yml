@@ -36,14 +36,15 @@
 
     - name: Testing role
       ansible.builtin.include_role:
-        name: ../../roles/service
+        name: my_ansible_collections.linux.service
       vars:
-        service_package: "{% if ansible_distribution == 'Ubuntu' %}apache2{% else %}httpd{% endif %}"
-        service_name: "{% if ansible_distribution == 'Ubuntu' %}apache2{% else %}httpd{% endif %}"
-        service_state: started
-        service_enabled: true
-        service_lineinfile_conf:
-          - path: "/etc/{% if ansible_distribution == 'Ubuntu' %}apache2/ports.conf{% else %}httpd/conf/httpd.conf{% endif %}"
-            regexp: '^\s*Listen 80\s*$'
-            line: Listen 8080
-            backup: true
+        service_list:
+          - package: "{% if ansible_distribution == 'Ubuntu' %}apache2{% else %}httpd{% endif %}"
+            name: "{% if ansible_distribution == 'Ubuntu' %}apache2{% else %}httpd{% endif %}"
+            state: started
+            enabled: true
+            lineinfile_conf:
+              - path: "/etc/{% if ansible_distribution == 'Ubuntu' %}apache2/ports.conf{% else %}httpd/conf/httpd.conf{% endif %}"
+                regexp: '^\s*Listen 80\s*$'
+                line: Listen 8080
+                backup: true

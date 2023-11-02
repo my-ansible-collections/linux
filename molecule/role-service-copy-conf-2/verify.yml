@@ -8,12 +8,12 @@
         filter:
           - ansible_distribution
 
-    - name: Execute "systemctl status"
+    - name: Execute "systemctl httpd status"
       ansible.builtin.command: systemctl status "{% if ansible_distribution == 'Ubuntu' %}apache2{% else %}httpd{% endif %}"
       register: systemctl_return
       changed_when: false
 
-    - name: Check systemctl status result
+    - name: Check systemctl httpd status result
       ansible.builtin.assert:
         that:
           - "'{% if ansible_distribution == 'Ubuntu' %}apache2{% else %}httpd{% endif %}.service; enabled;' in systemctl_return.stdout_lines[1]"

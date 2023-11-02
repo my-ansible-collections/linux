@@ -33,7 +33,8 @@ platforms:
     image: redhat/ubi8-init
     command: /usr/sbin/init
     privileged: true
-  - name: molecule.role-service-template-conf.cent7
-    image: centos:7
-    command: /usr/sbin/init
-    privileged: true
+  # Commented out because systemctl does not start sshd
+  # - name: molecule.role-service-template-conf.cent7
+  #   image: centos:7
+  #   command: /usr/sbin/init
+  #   privileged: true
