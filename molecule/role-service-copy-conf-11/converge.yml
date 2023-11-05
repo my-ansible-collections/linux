@@ -1,0 +1,70 @@
+---
+- name: Fail if molecule group is missing
+  hosts: localhost
+  tasks:
+    - name: Print some info
+      ansible.builtin.debug:
+        msg: "{{ groups }}"
+
+    - name: Assert group existence
+      ansible.builtin.assert:
+        that: "'molecule' in groups"
+        fail_msg: |
+          molecule group was not found inside inventory groups: {{ groups }}
+
+- name: Converge
+  hosts: molecule
+  # We disable gather facts because it would fail due to our container not
+  # having python installed. This will not prevent use from running 'raw'
+  # commands. Most molecule users are expected to use containers that already
+  # have python installed in order to avoid notable delays installing it.
+  gather_facts: false
+  tasks:
+    - name: Check uname
+      ansible.builtin.raw: uname -a
+      register: result
+      changed_when: false
+
+    - name: Print some info
+      ansible.builtin.assert:
+        that: result.stdout | regex_search("^Linux")
+
+    - name: Filter and return only selected facts
+      ansible.builtin.setup:
+        filter:
+          - ansible_distribution
+
+    - name: Testing role
+      ansible.builtin.include_role:
+        name: my_ansible_collections.linux.service
+      vars:
+        service_list:
+          - package: "{% if ansible_distribution == 'Ubuntu' %}apache2{% else %}httpd{% endif %}"
+            name: "{% if ansible_distribution == 'Ubuntu' %}apache2{% else %}httpd{% endif %}"
+            state: started
+            enabled: true
+            copy_conf:
+              - src: "./file/{% if ansible_distribution == 'Ubuntu' %}ports.conf.ubuntu2204{% else %}httpd.conf.amazon2023{% endif %}"
+                dest: "/etc/{% if ansible_distribution == 'Ubuntu' %}apache2/ports.conf{% else %}httpd/conf/httpd.conf{% endif %}"
+                backup: true
+            handler:
+              state: reloaded
+          - package: openssh-server
+            name: sshd
+            state: started
+            enabled: true
+            copy_conf:
+              - src: "./file/sshd_config.{% if ansible_distribution == 'Ubuntu' %}ubuntu2024{% else %}amazon2023{% endif %}"
+                dest: /etc/ssh/sshd_config
+                backup: true
+            handler:
+              state: reloaded
+          - package: vim
+          - package: less
+          - package: rsync
+          - package: tar
+          - package: gzip
+          - package: gcc
+          - package: git
+          - package: make
+          - package: curl

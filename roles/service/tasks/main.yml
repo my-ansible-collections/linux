@@ -4,6 +4,12 @@
   ansible.builtin.import_role:
     name: my_ansible_collections.linux.support_os
 
+- name: Validate service_list length
+  ansible.builtin.assert:
+    that:
+      - service_list|length < 11
+    fail_msg: service_list length over 10
+
 - name: Install package for DPKG
   when: ansible_distribution in ['Ubuntu']
   ansible.builtin.apt:
@@ -45,20 +51,8 @@
     enabled: "{{ item.enabled }}"
   loop: "{{ service_list }}"
 
-- name: Set fact copy conf list
-  ansible.builtin.set_fact:
-    service_copy_conf_list: >-
-      {%- set tmplist = [] -%}
-      {%- for i in range(service_list|length) -%}
-      {%-   if service_list[i].copy_conf is defined -%}
-      {%-     for j in range(service_list[i].copy_conf|length) -%}
-      {%-       set _ = tmplist.append(service_list[i].copy_conf[j]|combine({'handler_name':'Handler of role "service" ' + i|string})) -%}
-      {%-     endfor -%}
-      {%-   endif -%}
-      {%- endfor -%}
-      {{ tmplist }}
-
-- name: Copy conf file
+- name: Copy conf file 0
+  when: service_list[0].copy_conf is defined
   ansible.builtin.copy:
     src: "{{ item.src }}"
     dest: "{{ item.dest }}"
@@ -66,23 +60,119 @@
     owner: "{{ item.owner | default(omit) }}"
     group: "{{ item.group | default(omit) }}"
     mode: "{{ item.mode | default(omit) }}"
-  loop: "{{ service_copy_conf_list }}"
-  notify: "{{ item.handler_name }}"
+  loop: "{{ service_list[0].copy_conf }}"
+  notify: Handler of role "service" 0
 
-- name: Set fact template conf list
-  ansible.builtin.set_fact:
-    service_template_conf_list: >-
-      {%- set tmplist = [] -%}
-      {%- for i in range(service_list|length) -%}
-      {%-   if service_list[i].template_conf is defined -%}
-      {%-     for j in range(service_list[i].template_conf|length) -%}
-      {%-       set _ = tmplist.append(service_list[i].template_conf[j]|combine({'handler_name':'Handler of role "service" ' + i|string})) -%}
-      {%-     endfor -%}
-      {%-   endif -%}
-      {%- endfor -%}
-      {{ tmplist }}
+- name: Copy conf file 1
+  when: service_list[1].copy_conf is defined
+  ansible.builtin.copy:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    backup: "{{ item.backup | default(omit) }}"
+    owner: "{{ item.owner | default(omit) }}"
+    group: "{{ item.group | default(omit) }}"
+    mode: "{{ item.mode | default(omit) }}"
+  loop: "{{ service_list[1].copy_conf }}"
+  notify: Handler of role "service" 1
 
-- name: Template conf file out to a target host
+- name: Copy conf file 2
+  when: service_list[2].copy_conf is defined
+  ansible.builtin.copy:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    backup: "{{ item.backup | default(omit) }}"
+    owner: "{{ item.owner | default(omit) }}"
+    group: "{{ item.group | default(omit) }}"
+    mode: "{{ item.mode | default(omit) }}"
+  loop: "{{ service_list[2].copy_conf }}"
+  notify: Handler of role "service" 2
+
+- name: Copy conf file 3
+  when: service_list[3].copy_conf is defined
+  ansible.builtin.copy:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    backup: "{{ item.backup | default(omit) }}"
+    owner: "{{ item.owner | default(omit) }}"
+    group: "{{ item.group | default(omit) }}"
+    mode: "{{ item.mode | default(omit) }}"
+  loop: "{{ service_list[3].copy_conf }}"
+  notify: Handler of role "service" 3
+
+- name: Copy conf file 4
+  when: service_list[4].copy_conf is defined
+  ansible.builtin.copy:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    backup: "{{ item.backup | default(omit) }}"
+    owner: "{{ item.owner | default(omit) }}"
+    group: "{{ item.group | default(omit) }}"
+    mode: "{{ item.mode | default(omit) }}"
+  loop: "{{ service_list[4].copy_conf }}"
+  notify: Handler of role "service" 4
+
+- name: Copy conf file 5
+  when: service_list[5].copy_conf is defined
+  ansible.builtin.copy:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    backup: "{{ item.backup | default(omit) }}"
+    owner: "{{ item.owner | default(omit) }}"
+    group: "{{ item.group | default(omit) }}"
+    mode: "{{ item.mode | default(omit) }}"
+  loop: "{{ service_list[5].copy_conf }}"
+  notify: Handler of role "service" 5
+
+- name: Copy conf file 6
+  when: service_list[6].copy_conf is defined
+  ansible.builtin.copy:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    backup: "{{ item.backup | default(omit) }}"
+    owner: "{{ item.owner | default(omit) }}"
+    group: "{{ item.group | default(omit) }}"
+    mode: "{{ item.mode | default(omit) }}"
+  loop: "{{ service_list[6].copy_conf }}"
+  notify: Handler of role "service" 6
+
+- name: Copy conf file 7
+  when: service_list[7].copy_conf is defined
+  ansible.builtin.copy:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    backup: "{{ item.backup | default(omit) }}"
+    owner: "{{ item.owner | default(omit) }}"
+    group: "{{ item.group | default(omit) }}"
+    mode: "{{ item.mode | default(omit) }}"
+  loop: "{{ service_list[7].copy_conf }}"
+  notify: Handler of role "service" 7
+
+- name: Copy conf file 8
+  when: service_list[8].copy_conf is defined
+  ansible.builtin.copy:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    backup: "{{ item.backup | default(omit) }}"
+    owner: "{{ item.owner | default(omit) }}"
+    group: "{{ item.group | default(omit) }}"
+    mode: "{{ item.mode | default(omit) }}"
+  loop: "{{ service_list[8].copy_conf }}"
+  notify: Handler of role "service" 8
+
+- name: Copy conf file 9
+  when: service_list[9].copy_conf is defined
+  ansible.builtin.copy:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    backup: "{{ item.backup | default(omit) }}"
+    owner: "{{ item.owner | default(omit) }}"
+    group: "{{ item.group | default(omit) }}"
+    mode: "{{ item.mode | default(omit) }}"
+  loop: "{{ service_list[9].copy_conf }}"
+  notify: Handler of role "service" 9
+
+- name: Template conf file out to a target host 0
+  when: service_list[0].template_conf is defined
   ansible.builtin.template:
     src: "{{ item.src }}"
     dest: "{{ item.dest }}"
@@ -90,23 +180,119 @@
     owner: "{{ item.owner | default(omit) }}"
     group: "{{ item.group | default(omit) }}"
     mode: "{{ item.mode | default(omit) }}"
-  loop: "{{ service_template_conf_list }}"
-  notify: "{{ item.handler_name }}"
+  loop: "{{ service_list[0].template_conf }}"
+  notify: Handler of role "service" 0
 
-- name: Set fact Linefile conf list
-  ansible.builtin.set_fact:
-    service_linefile_conf_list: >-
-      {%- set tmplist = [] -%}
-      {%- for i in range(service_list|length) -%}
-      {%-   if service_list[i].lineinfile_conf is defined -%}
-      {%-     for j in range(service_list[i].lineinfile_conf|length) -%}
-      {%-       set _ = tmplist.append(service_list[i].lineinfile_conf[j]|combine({'handler_name':'Handler of role "service" ' + i|string})) -%}
-      {%-     endfor -%}
-      {%-   endif -%}
-      {%- endfor -%}
-      {{ tmplist }}
+- name: Template conf file out to a target host 1
+  when: service_list[1].template_conf is defined
+  ansible.builtin.template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    backup: "{{ item.backup | default(omit) }}"
+    owner: "{{ item.owner | default(omit) }}"
+    group: "{{ item.group | default(omit) }}"
+    mode: "{{ item.mode | default(omit) }}"
+  loop: "{{ service_list[1].template_conf }}"
+  notify: Handler of role "service" 1
 
-- name: Linefile conf file
+- name: Template conf file out to a target host 2
+  when: service_list[2].template_conf is defined
+  ansible.builtin.template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    backup: "{{ item.backup | default(omit) }}"
+    owner: "{{ item.owner | default(omit) }}"
+    group: "{{ item.group | default(omit) }}"
+    mode: "{{ item.mode | default(omit) }}"
+  loop: "{{ service_list[2].template_conf }}"
+  notify: Handler of role "service" 2
+
+- name: Template conf file out to a target host 3
+  when: service_list[3].template_conf is defined
+  ansible.builtin.template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    backup: "{{ item.backup | default(omit) }}"
+    owner: "{{ item.owner | default(omit) }}"
+    group: "{{ item.group | default(omit) }}"
+    mode: "{{ item.mode | default(omit) }}"
+  loop: "{{ service_list[3].template_conf }}"
+  notify: Handler of role "service" 3
+
+- name: Template conf file out to a target host 4
+  when: service_list[4].template_conf is defined
+  ansible.builtin.template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    backup: "{{ item.backup | default(omit) }}"
+    owner: "{{ item.owner | default(omit) }}"
+    group: "{{ item.group | default(omit) }}"
+    mode: "{{ item.mode | default(omit) }}"
+  loop: "{{ service_list[4].template_conf }}"
+  notify: Handler of role "service" 4
+
+- name: Template conf file out to a target host 5
+  when: service_list[5].template_conf is defined
+  ansible.builtin.template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    backup: "{{ item.backup | default(omit) }}"
+    owner: "{{ item.owner | default(omit) }}"
+    group: "{{ item.group | default(omit) }}"
+    mode: "{{ item.mode | default(omit) }}"
+  loop: "{{ service_list[5].template_conf }}"
+  notify: Handler of role "service" 5
+
+- name: Template conf file out to a target host 6
+  when: service_list[6].template_conf is defined
+  ansible.builtin.template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    backup: "{{ item.backup | default(omit) }}"
+    owner: "{{ item.owner | default(omit) }}"
+    group: "{{ item.group | default(omit) }}"
+    mode: "{{ item.mode | default(omit) }}"
+  loop: "{{ service_list[6].template_conf }}"
+  notify: Handler of role "service" 6
+
+- name: Template conf file out to a target host 7
+  when: service_list[7].template_conf is defined
+  ansible.builtin.template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    backup: "{{ item.backup | default(omit) }}"
+    owner: "{{ item.owner | default(omit) }}"
+    group: "{{ item.group | default(omit) }}"
+    mode: "{{ item.mode | default(omit) }}"
+  loop: "{{ service_list[7].template_conf }}"
+  notify: Handler of role "service" 7
+
+- name: Template conf file out to a target host 8
+  when: service_list[8].template_conf is defined
+  ansible.builtin.template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    backup: "{{ item.backup | default(omit) }}"
+    owner: "{{ item.owner | default(omit) }}"
+    group: "{{ item.group | default(omit) }}"
+    mode: "{{ item.mode | default(omit) }}"
+  loop: "{{ service_list[8].template_conf }}"
+  notify: Handler of role "service" 8
+
+- name: Template conf file out to a target host 9
+  when: service_list[9].template_conf is defined
+  ansible.builtin.template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    backup: "{{ item.backup | default(omit) }}"
+    owner: "{{ item.owner | default(omit) }}"
+    group: "{{ item.group | default(omit) }}"
+    mode: "{{ item.mode | default(omit) }}"
+  loop: "{{ service_list[9].template_conf }}"
+  notify: Handler of role "service" 9
+
+- name: Linefile conf file 0
+  when: service_list[0].lineinfile_conf is defined
   ansible.builtin.lineinfile:
     path: "{{ item.path }}"
     regexp: "{{ item.regexp }}"
@@ -117,5 +303,140 @@
     owner: "{{ item.owner | default(omit) }}"
     group: "{{ item.group | default(omit) }}"
     mode: "{{ item.mode | default(omit) }}"
-  loop: "{{ service_linefile_conf_list }}"
-  notify: "{{ item.handler_name }}"
+  loop: "{{ service_list[0].lineinfile_conf }}"
+  notify: Handler of role "service" 0
+
+- name: Linefile conf file 1
+  when: service_list[1].lineinfile_conf is defined
+  ansible.builtin.lineinfile:
+    path: "{{ item.path }}"
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+    insertafter: "{{ item.insertafter | default(omit) }}"
+    insertbefore: "{{ item.insertbefore | default(omit) }}"
+    backup: "{{ item.backup | default(omit) }}"
+    owner: "{{ item.owner | default(omit) }}"
+    group: "{{ item.group | default(omit) }}"
+    mode: "{{ item.mode | default(omit) }}"
+  loop: "{{ service_list[1].lineinfile_conf }}"
+  notify: Handler of role "service" 1
+
+- name: Linefile conf file 2
+  when: service_list[2].lineinfile_conf is defined
+  ansible.builtin.lineinfile:
+    path: "{{ item.path }}"
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+    insertafter: "{{ item.insertafter | default(omit) }}"
+    insertbefore: "{{ item.insertbefore | default(omit) }}"
+    backup: "{{ item.backup | default(omit) }}"
+    owner: "{{ item.owner | default(omit) }}"
+    group: "{{ item.group | default(omit) }}"
+    mode: "{{ item.mode | default(omit) }}"
+  loop: "{{ service_list[2].lineinfile_conf }}"
+  notify: Handler of role "service" 2
+
+- name: Linefile conf file 3
+  when: service_list[3].lineinfile_conf is defined
+  ansible.builtin.lineinfile:
+    path: "{{ item.path }}"
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+    insertafter: "{{ item.insertafter | default(omit) }}"
+    insertbefore: "{{ item.insertbefore | default(omit) }}"
+    backup: "{{ item.backup | default(omit) }}"
+    owner: "{{ item.owner | default(omit) }}"
+    group: "{{ item.group | default(omit) }}"
+    mode: "{{ item.mode | default(omit) }}"
+  loop: "{{ service_list[3].lineinfile_conf }}"
+  notify: Handler of role "service" 3
+
+- name: Linefile conf file 4
+  when: service_list[4].lineinfile_conf is defined
+  ansible.builtin.lineinfile:
+    path: "{{ item.path }}"
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+    insertafter: "{{ item.insertafter | default(omit) }}"
+    insertbefore: "{{ item.insertbefore | default(omit) }}"
+    backup: "{{ item.backup | default(omit) }}"
+    owner: "{{ item.owner | default(omit) }}"
+    group: "{{ item.group | default(omit) }}"
+    mode: "{{ item.mode | default(omit) }}"
+  loop: "{{ service_list[4].lineinfile_conf }}"
+  notify: Handler of role "service" 4
+
+- name: Linefile conf file 5
+  when: service_list[5].lineinfile_conf is defined
+  ansible.builtin.lineinfile:
+    path: "{{ item.path }}"
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+    insertafter: "{{ item.insertafter | default(omit) }}"
+    insertbefore: "{{ item.insertbefore | default(omit) }}"
+    backup: "{{ item.backup | default(omit) }}"
+    owner: "{{ item.owner | default(omit) }}"
+    group: "{{ item.group | default(omit) }}"
+    mode: "{{ item.mode | default(omit) }}"
+  loop: "{{ service_list[5].lineinfile_conf }}"
+  notify: Handler of role "service" 5
+
+- name: Linefile conf file 6
+  when: service_list[6].lineinfile_conf is defined
+  ansible.builtin.lineinfile:
+    path: "{{ item.path }}"
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+    insertafter: "{{ item.insertafter | default(omit) }}"
+    insertbefore: "{{ item.insertbefore | default(omit) }}"
+    backup: "{{ item.backup | default(omit) }}"
+    owner: "{{ item.owner | default(omit) }}"
+    group: "{{ item.group | default(omit) }}"
+    mode: "{{ item.mode | default(omit) }}"
+  loop: "{{ service_list[6].lineinfile_conf }}"
+  notify: Handler of role "service" 6
+
+- name: Linefile conf file 7
+  when: service_list[7].lineinfile_conf is defined
+  ansible.builtin.lineinfile:
+    path: "{{ item.path }}"
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+    insertafter: "{{ item.insertafter | default(omit) }}"
+    insertbefore: "{{ item.insertbefore | default(omit) }}"
+    backup: "{{ item.backup | default(omit) }}"
+    owner: "{{ item.owner | default(omit) }}"
+    group: "{{ item.group | default(omit) }}"
+    mode: "{{ item.mode | default(omit) }}"
+  loop: "{{ service_list[7].lineinfile_conf }}"
+  notify: Handler of role "service" 7
+
+- name: Linefile conf file 8
+  when: service_list[8].lineinfile_conf is defined
+  ansible.builtin.lineinfile:
+    path: "{{ item.path }}"
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+    insertafter: "{{ item.insertafter | default(omit) }}"
+    insertbefore: "{{ item.insertbefore | default(omit) }}"
+    backup: "{{ item.backup | default(omit) }}"
+    owner: "{{ item.owner | default(omit) }}"
+    group: "{{ item.group | default(omit) }}"
+    mode: "{{ item.mode | default(omit) }}"
+  loop: "{{ service_list[8].lineinfile_conf }}"
+  notify: Handler of role "service" 8
+
+- name: Linefile conf file 9
+  when: service_list[9].lineinfile_conf is defined
+  ansible.builtin.lineinfile:
+    path: "{{ item.path }}"
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+    insertafter: "{{ item.insertafter | default(omit) }}"
+    insertbefore: "{{ item.insertbefore | default(omit) }}"
+    backup: "{{ item.backup | default(omit) }}"
+    owner: "{{ item.owner | default(omit) }}"
+    group: "{{ item.group | default(omit) }}"
+    mode: "{{ item.mode | default(omit) }}"
+  loop: "{{ service_list[9].lineinfile_conf }}"
+  notify: Handler of role "service" 9
