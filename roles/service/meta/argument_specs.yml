@@ -9,10 +9,10 @@ argument_specs:
         options:
           package:
             type: "str"
-            required: true
+            required: false
           name:
             type: "str"
-            required: false
+            required: true
           state:
             type: "str"
             required: false

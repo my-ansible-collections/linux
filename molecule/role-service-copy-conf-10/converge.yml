@@ -59,11 +59,11 @@
                 backup: true
             handler:
               state: reloaded
-          - package: vim
-          - package: less
-          - package: rsync
-          - package: tar
-          - package: gzip
-          - package: gcc
-          - package: git
-          - package: make
+          - name: vim
+          - name: less
+          - name: rsync
+          - name: tar
+          - name: gzip
+          - name: gcc
+          - name: git
+          - name: make
